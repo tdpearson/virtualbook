@@ -13,6 +13,8 @@ public class CustomGestureManager : MonoBehaviour
     Gesture _forward;
     Gesture _back;
 
+    enum pageflip {Forward, Back}
+
     private bool allowPageTurn = true;        // must be true or will block gesture detection
     public float throttlePageTurns = 1.5f;    // time to throttle in seconds
     public float confidenceThreshold = 0.98f; // confidence level (percent) needed to trigger detection
@@ -68,40 +70,42 @@ public class CustomGestureManager : MonoBehaviour
             {
                 if (frame.DiscreteGestureResults.Count > 0)
                 {
+                    if (!allowPageTurn) return;
                     DiscreteGestureResult forwardresult = frame.DiscreteGestureResults[_forward];
                     DiscreteGestureResult backresult = frame.DiscreteGestureResults[_back];
                     if ((forwardresult == null) && (backresult == null)) return;
-                    if ((forwardresult.Detected == true) && (allowPageTurn))
+                    if (forwardresult.Detected == true)
                     {
                         if (forwardresult.Confidence < confidenceThreshold) return;  // skip if too low on confidence
 
                         Debug.Log("Foward gesture detected");
-                        StartCoroutine(flippage("forward"));
+                        StartCoroutine(flippage(pageflip.Forward));
                     }
-                    else if ((backresult.Detected == true) && (allowPageTurn))
+                    else if (backresult.Detected == true)
                     {
                         if (backresult.Confidence < confidenceThreshold) return;  // skip if too low on confidence
 
                         Debug.Log("Back gesture detected");
-                        StartCoroutine(flippage("back"));
+                        StartCoroutine(flippage(pageflip.Back));
                     }
                 }
             }
         }
     }
 
-    IEnumerator flippage(string direction)
+    IEnumerator flippage(pageflip direction)
     {
         allowPageTurn = false;
         // perform animation
         Debug.Log("Trigger flip page...");
 
-        if (direction == "forward")
+        if (direction == pageflip.Forward)
         {
             Debug.Log("Flipping page Forward");
             book.NextPage();
-        } else
-        {
+        }
+        else if (direction == pageflip.Back)
+            {
             Debug.Log("Flipping page Back");
             book.PrevPage();
         }
