@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Windows.Kinect;
+using Microsoft.Kinect.VisualGestureBuilder;
+
 
 public class BodyManager : MonoBehaviour {
 
     public GameObject BodySrcManager;
     private BodySourceManager bodyManager;
-    private Body[] bodies;
+    private Body[] bodies = null;
     public CustomGestureManager GestureManager;
+
+    //private List<Gesture>
 
     void Start()
     {

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Windows.Kinect;
 
 public class BodySourceManager : MonoBehaviour
@@ -7,6 +8,8 @@ public class BodySourceManager : MonoBehaviour
     private KinectSensor _Sensor;
     private BodyFrameReader _Reader;
     private Body[] _Data = null;
+
+    private List<CustomGestureManager> gestureDetectorList = null;
 
     public Body[] GetData()
     {
@@ -20,12 +23,23 @@ public class BodySourceManager : MonoBehaviour
 
         if (_Sensor != null)
         {
-            _Reader = _Sensor.BodyFrameSource.OpenReader();
-
             if (!_Sensor.IsOpen)
             {
                 _Sensor.Open();
             }
+            
+            _Reader = _Sensor.BodyFrameSource.OpenReader();
+
+            gestureDetectorList = new List<CustomGestureManager>();
+
+            // get maximum number of bodies the sensor can track
+            int maxBodies = _Sensor.BodyFrameSource.BodyCount;
+
+            for (int i = 0; i < maxBodies; ++i)
+            {
+                // TODO: assign each body to a gesturemanager
+            }
+
         }
     }
 
